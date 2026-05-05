@@ -43,9 +43,9 @@
       <button class="btn btn-primary me-2" @click="refreshList">
         <i class="fas fa-sync"></i> Làm mới danh sách
       </button>
-      <button class="btn btn-success me-2" @click="goToAddContact">
+      <router-link :to="{ name: 'contact.add' }" class="btn btn-success me-2">
         <i class="fas fa-plus"></i> Thêm mới
-      </button>
+      </router-link>
       <button class="btn btn-danger" @click="removeAllContacts">
         <i class="fas fa-trash"></i> Xóa tất cả
       </button>

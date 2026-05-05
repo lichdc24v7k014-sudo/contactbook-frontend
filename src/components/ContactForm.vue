@@ -1,11 +1,7 @@
 <template>
-  <Form
-    @submit="submitContact"
-    :validation-schema="contactFormSchema"
-    class="contact-form"
-  >
+  <form @submit.prevent="submitContact" :validation-schema="contactFormSchema">
     <div class="form-group">
-      <label for="name">Tên <span class="text-danger">*</span></label>
+      <label>Tên <span class="text-danger">*</span></label>
       <Field
         name="name"
         type="text"
@@ -16,7 +12,7 @@
     </div>
 
     <div class="form-group">
-      <label for="email">E-mail</label>
+      <label>E-mail</label>
       <Field
         name="email"
         type="email"
@@ -27,7 +23,7 @@
     </div>
 
     <div class="form-group">
-      <label for="address">Địa chỉ</label>
+      <label>Địa chỉ</label>
       <Field
         name="address"
         type="text"
@@ -38,7 +34,7 @@
     </div>
 
     <div class="form-group">
-      <label for="phone">Điện thoại</label>
+      <label>Điện thoại</label>
       <Field
         name="phone"
         type="tel"
@@ -48,8 +44,8 @@
       <ErrorMessage name="phone" class="error-feedback" />
     </div>
 
-    <div class="form-group form-check">
-      <Field
+    <div class="form-group form-check mt-3">
+      <input
         name="favorite"
         type="checkbox"
         class="form-check-input"
@@ -62,56 +58,32 @@
 
     <div class="form-group mt-4">
       <button type="submit" class="btn btn-primary me-2">Lưu</button>
-
-      <button
-        v-if="contactLocal._id"
-        type="button"
-        class="btn btn-danger me-2"
-        @click="deleteContact"
-      >
-        Xóa
-      </button>
-
       <button type="button" class="btn btn-secondary" @click="cancel">
         Thoát
       </button>
     </div>
-  </Form>
+  </form>
 </template>
 
 <script>
-import { Form, Field, ErrorMessage } from "vee-validate";
 import * as yup from "yup";
+import { Form, Field, ErrorMessage } from "vee-validate";
 
 export default {
-  components: {
-    Form,
-    Field,
-    ErrorMessage,
-  },
-  emits: ["submit:contact", "delete:contact"],
+  components: { Form, Field, ErrorMessage },
+  emits: ["submit:contact"],
   props: {
-    contact: {
-      type: Object,
-      required: true,
-    },
+    contact: { type: Object, required: true },
   },
   data() {
     const contactFormSchema = yup.object().shape({
-      name: yup
-        .string()
-        .required("Tên phải có giá trị.")
-        .min(2, "Tên phải ít nhất 2 ký tự.")
-        .max(50, "Tên tối đa 50 ký tự."),
-      email: yup
-        .string()
-        .email("E-mail không đúng định dạng.")
-        .max(50, "E-mail tối đa 50 ký tự."),
-      address: yup.string().max(100, "Địa chỉ tối đa 100 ký tự."),
+      name: yup.string().required("Tên phải có giá trị.").min(2).max(50),
+      email: yup.string().email("E-mail không đúng.").max(50),
+      address: yup.string().max(100),
       phone: yup
         .string()
         .matches(
-          /((09|03|07|08|05)+([0-9]{8})\b)/g,
+          /((09|03|07|08|05)+([0-9]{8})\b)/,
           "Số điện thoại không hợp lệ.",
         ),
     });
@@ -125,11 +97,8 @@ export default {
     submitContact() {
       this.$emit("submit:contact", this.contactLocal);
     },
-    deleteContact() {
-      this.$emit("delete:contact", this.contactLocal._id);
-    },
     cancel() {
-      if (confirm("Bạn có thay đổi chưa lưu. Thoát thật không?")) {
+      if (confirm("Bạn có chắc muốn thoát?")) {
         this.$router.push({ name: "contactbook" });
       }
     },
@@ -140,6 +109,6 @@ export default {
 <style scoped>
 .error-feedback {
   color: red;
-  font-size: 0.9em;
+  font-size: 0.85rem;
 }
 </style>
