@@ -24,6 +24,17 @@
       <div class="col-md-6" v-if="activeContact">
         <h5><i class="fas fa-address-card"></i> Chi tiết Liên hệ</h5>
         <ContactCard :contact="activeContact" />
+
+        <!-- Thêm nút Hiệu chỉnh -->
+        <router-link
+          :to="{
+            name: 'contact.edit',
+            params: { id: activeContact._id },
+          }"
+          class="btn btn-warning btn-sm mt-2"
+        >
+          <i class="fas fa-edit"></i> Hiệu chỉnh
+        </router-link>
       </div>
     </div>
 
