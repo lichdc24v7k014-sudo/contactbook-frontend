@@ -7,6 +7,13 @@
       </div>
     </div>
 
+    <!-- Nút sắp xếp -->
+    <select v-model="sortBy" class="form-select ms-2" style="width: 180px">
+      <option value="name-asc">Tên A → Z</option>
+      <option value="name-desc">Tên Z → A</option>
+      <option value="favorite">Yêu thích trước</option>
+    </select>
+
     <h4 class="mt-4"><i class="fas fa-address-book"></i> Danh bạ</h4>
 
     <div class="row">
@@ -70,6 +77,7 @@ export default {
       contacts: [],
       activeIndex: -1,
       searchText: "",
+      sortBy: "name-asc",
     };
   },
   computed: {
@@ -80,11 +88,27 @@ export default {
       });
     },
     filteredContacts() {
-      if (!this.searchText) return this.contacts;
-      const term = this.searchText.toLowerCase();
-      return this.contacts.filter((contact, index) =>
-        this.contactStrings[index].includes(term),
-      );
+      let results = this.contacts;
+
+      // Tìm kiếm
+      if (this.searchText) {
+        const term = this.searchText.toLowerCase();
+        results = results.filter((contact) =>
+          [contact.name, contact.email, contact.phone, contact.address]
+            .join(" ")
+            .toLowerCase()
+            .includes(term),
+        );
+      }
+
+      // Sắp xếp
+      return [...results].sort((a, b) => {
+        if (this.sortBy === "name-asc") return a.name.localeCompare(b.name);
+        if (this.sortBy === "name-desc") return b.name.localeCompare(a.name);
+        if (this.sortBy === "favorite")
+          return (b.favorite ? 1 : 0) - (a.favorite ? 1 : 0);
+        return 0;
+      });
     },
     filteredContactsCount() {
       return this.filteredContacts.length;
